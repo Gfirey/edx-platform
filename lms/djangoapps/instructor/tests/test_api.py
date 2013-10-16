@@ -102,11 +102,6 @@ class TestInstructorAPIDenyLevels(ModuleStoreTestCase, LoginEnrollmentTestCase):
         CourseEnrollment.enroll(self.user, self.course.id)
         self.client.login(username=self.user.username, password='test')
 
-    def test_deny_students_update_enrollment(self):
-        url = reverse('students_update_enrollment', kwargs={'course_id': self.course.id})
-        response = self.client.get(url, {})
-        self.assertEqual(response.status_code, 403)
-
     def test_staff_level(self):
         """
         Ensure that an enrolled student can't access staff or instructor endpoints.
@@ -126,11 +121,16 @@ class TestInstructorAPIDenyLevels(ModuleStoreTestCase, LoginEnrollmentTestCase):
             'update_forum_role_membership',
             'proxy_legacy_analytics',
             'send_email',
+            'list_background_email_tasks',
         ]
         for endpoint in staff_level_endpoints:
             url = reverse(endpoint, kwargs={'course_id': self.course.id})
             response = self.client.get(url, {})
-            self.assertEqual(response.status_code, 403)
+            self.assertEqual(
+                response.status_code,
+                403,
+                msg="Student should not be allowed to access endpoint " + endpoint
+            )
 
     def test_instructor_level(self):
         """
@@ -140,13 +140,16 @@ class TestInstructorAPIDenyLevels(ModuleStoreTestCase, LoginEnrollmentTestCase):
             'modify_access',
             'list_course_role_members',
             'reset_student_attempts',
-            'list_instructor_tasks',
             'update_forum_role_membership',
         ]
         for endpoint in instructor_level_endpoints:
             url = reverse(endpoint, kwargs={'course_id': self.course.id})
             response = self.client.get(url, {})
-            self.assertEqual(response.status_code, 403)
+            self.assertEqual(
+                response.status_code,
+                403,
+                msg="Staff should not be allowed to access endpoint " + endpoint
+            )
 
 
 @override_settings(MODULESTORE=TEST_DATA_MIXED_MODULESTORE)
