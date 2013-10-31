@@ -213,13 +213,8 @@ def _has_access_course_desc(user, course, action):
         course_mode = CourseMode.mode_for_course(course.id, 'verified')
         if course_mode is None:
             return False
-        expiration_date = course_mode.expiration_date
-        now = datetime.now(UTC()).date()
-        if expiration_date is None:
+        else:
             return True
-        if (now <= expiration_date):
-            return True
-        return False
 
 
     checkers = {

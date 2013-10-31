@@ -897,23 +897,21 @@ def create_account(request, post_override=None):
     subject = ''.join(subject.splitlines())
     message = render_to_string('emails/activation_email.txt', d)
 
-    # dont send email if we are doing load testing or random user generation for some reason
+    # don't send email if we are doing load testing or random user generation for some reason
     if not (settings.MITX_FEATURES.get('AUTOMATIC_AUTH_FOR_TESTING')):
         try:
             if settings.MITX_FEATURES.get('REROUTE_ACTIVATION_EMAIL'):
                 dest_addr = settings.MITX_FEATURES['REROUTE_ACTIVATION_EMAIL']
                 message = ("Activation for %s (%s): %s\n" % (user, user.email, profile.name) +
                            '-' * 80 + '\n\n' + message)
-                try:
-                    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [dest_addr], fail_silently=False)
-                except (smtplib.SMTPException, BotoServerError):
-                    log.error('todo put real error message here')
+                send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [dest_addr], fail_silently=False)
             else:
                 _res = user.email_user(subject, message, settings.DEFAULT_FROM_EMAIL)
         except:
             log.warning('Unable to send activation email to user', exc_info=True)
             js['value'] = _('Could not send activation e-mail.')
             return HttpResponse(json.dumps(js))
+
 
     # Immediately after a user creates an account, we log them in. They are only
     # logged in until they close the browser. They can't log in again until they click
