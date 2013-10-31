@@ -14,11 +14,13 @@ from django.contrib.auth.models import AnonymousUser
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from xmodule.modulestore.tests.factories import CourseFactory
 from courseware.tests.tests import TEST_DATA_MONGO_MODULESTORE
+from courseware.courses import get_course_by_id
 from shoppingcart.models import (Order, OrderItem, CertificateItem, InvalidCartItem, PaidCourseRegistration,
                                  OrderItemSubclassPK)
 from student.tests.factories import UserFactory
 from student.models import CourseEnrollment, unenroll_done
 from course_modes.models import CourseMode
+from course_modes.tests.factories import CourseModeFactory
 from shoppingcart.exceptions import PurchasedCallbackException
 from django.utils.timezone import UTC
 import datetime
@@ -336,7 +338,7 @@ class CertificateItemTest(ModuleStoreTestCase):
                                  mode_display_name="honor cert",
                                  min_price=self.cost)
         course_mode.save()
-        course_mode = CourseMode(course_id=self.course_id,
+        course_mode = CourseModeFactory(course_id=self.course_id,
                                  mode_slug="verified",
                                  mode_display_name="verified cert",
                                  min_price=self.cost)
@@ -376,30 +378,53 @@ class CertificateItemTest(ModuleStoreTestCase):
 
     def test_refund_cert_callback_before_expiration(self):
         # enroll and buy; dup from test_existing_enrollment
-        CourseEnrollment.enroll(self.user,self.course_id,'verified')
+        from nose.tools import set_trace; set_trace()
+        before_exp_course_id = "refund_before_expiration/test/one"
         many_days = datetime.timedelta(days=60)
-        CourseMode.mode_for_course(self.course_id,'verified').expiration_date = datetime.datetime.now(UTC()).date() + many_days
-        cart = Order.get_cart_for_user(user=self.user)
-        CertificateItem.add_to_order(cart, self.course_id, self.cost, 'verified')
-        cart.purchase()
-        # now that it's there, let's try refunding it
-        CourseEnrollment.unenroll(self.user, self.course_id)
-        target_certs = CertificateItem.objects.filter(course_id=self.course_id, user_id=self.user, status='refunded', mode='verified')
-        self.assertTrue(target_certs[0])
 
+        CourseFactory.create(org='refund_before_expiration',number='test',run='course',display_name='one')
+        course_mode = CourseMode(course_id=before_exp_course_id, 
+            mode_slug="verified", 
+            mode_display_name="verified cert",
+            min_price = self.cost,
+            expiration_date=(datetime.datetime.now(UTC()).date() + many_days))
+        course_mode.save()
+
+        CourseEnrollment.enroll(self.user,before_exp_course_id,'verified')
+        cart = Order.get_cart_for_user(user=self.user)
+        CertificateItem.add_to_order(cart, before_exp_course_id, self.cost, 'verified')
+        cart.purchase()
+
+        # now that it's there, let's try refunding it
+        CourseEnrollment.unenroll(self.user, before_exp_course_id)
+        target_certs = CertificateItem.objects.filter(course_id=before_exp_course_id, user_id=self.user, status='refunded', mode='verified')
+        self.assertTrue(target_certs[0])
+"""
     def test_refund_cert_callback_after_expiration(self):
         # enroll and buy; dup from test_existing_enrollment
-        CourseEnrollment.enroll(self.user,self.course_id,'verified')
+        from nose.tools import set_trace; set_trace()
+
+        after_exp_course_id = "hello/goodbye/yousay"
         many_days = datetime.timedelta(days=60)
-        CourseMode.mode_for_course(self.course_id,'verified').expiration_date = datetime.datetime.now(UTC()).date() - many_days
+
+        CourseFactory.create(org='hello',number='goodbye',run='course',display_name='yousay')
+        course_mode = CourseMode(course_id=after_exp_course_id, 
+            mode_slug="verified", 
+            mode_display_name="verified cert",
+            min_price = self.cost,
+            expiration_date=(datetime.datetime.now(UTC()).date() - many_days))
+        course_mode.save()
+
+        CourseEnrollment.enroll(self.user,after_exp_course_id,'verified')
         cart = Order.get_cart_for_user(user=self.user)
-        CertificateItem.add_to_order(cart, self.course_id, self.cost, 'verified')
+        CertificateItem.add_to_order(cart, after_exp_course_id, self.cost, 'verified')
         cart.purchase()
+
         # now that it's there, let's try refunding it
         CourseEnrollment.unenroll(self.user, self.course_id)
-        target_certs = CertificateItem.objects.filter(course_id=self.course_id, user_id=self.user, status='refunded', mode='verified')
+        target_certs = CertificateItem.objects.filter(course_id=after_exp_course_id, user_id=self.user, status='refunded', mode='verified')
         self.assertEqual(None, target_certs)
-
+"""
     #def test_refund_cert_no_cert_exists(self):
     #    course_enrollment = CourseEnrollment.enroll(self.user, self.course_id)
     #    with self.assertRaises(IndexError):

@@ -12,3 +12,6 @@ class CourseModeFactory(DjangoModelFactory):
     min_price = 0
     currency = 'usd'
     expiration_date = None
+
+    def _set_expiration_date(self, value):
+    	self.expiration_date = value
