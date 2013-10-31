@@ -23,6 +23,16 @@
       beforeEach(function() {
         spyOn($.fn, 'slider').andCallThrough();
         initialize();
+
+        this.addMatchers({
+          toBeInRange: function(min, max) {
+            return min <= this.actual && this.actual <= max;
+          },
+
+          toBeInArray: function(arr) {
+            return $.inArray(this.actual, arr) === -1 ? false : true;
+          }
+        });
       });
 
       it('initialize currentVolume to 100', function() {
@@ -43,6 +53,26 @@
           change: videoVolumeControl.onChange,
           slide: videoVolumeControl.onChange
         });
+      });
+
+      it('add ARIA attributes to slider handle', function () {
+        var sliderHandle = $('div.volume-slider>a.ui-slider-handle'),
+        arr = ['muted', 'very low', 'low', 'average', 'loud', 'very loud',
+               'maximum'];
+        expect(sliderHandle).toHaveAttr('role', 'slider');
+        expect(sliderHandle).toHaveAttr('title', 'volume');  
+        expect(sliderHandle).toHaveAttr('aria-disabled', 'false');
+        expect(sliderHandle).toHaveAttr( 'aria-valuemin', '0');
+        expect(sliderHandle).toHaveAttr( 'aria-valuemax', '100');
+        expect(sliderHandle.attr('aria-valuenow')).toBeInRange(0, 100);
+        expect(sliderHandle.attr('aria-valuetext')).toBeInArray(arr);
+      });
+ 
+      it('add ARIA attributes to volume control', function () {
+        var volumeControl = $('div.volume>a');
+        expect(volumeControl).toHaveAttr('role', 'button');
+        expect(volumeControl).toHaveAttr('title', 'Volume');
+        expect(volumeControl).toHaveAttr('aria-disabled', 'false');
       });
 
       it('bind the volume control', function() {

@@ -46,6 +46,13 @@
                     expect($('.video')).toContain('a.hide-subtitles');
                 });
 
+                it('add ARIA attributes to caption control', function () {
+                    var captionControl = $('a.hide-subtitles');
+                    expect(captionControl).toHaveAttr('role', 'button');
+                    expect(captionControl).toHaveAttr('title', 'Turn off captions');
+                    expect(captionControl).toHaveAttr('aria-disabled', 'false');
+                });
+
                 it('fetch the caption', function () {
                     waitsFor(function () {
                         if (videoCaption.loaded === true) {

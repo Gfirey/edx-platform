@@ -30,6 +30,13 @@
         expect($('.video-controls').find('.vidtime')).toHaveText('0:00 / 0:00');
       });
 
+      it('add ARIA attributes to fullscreen control', function () {
+        var fullScreenControl = $('a.add-fullscreen');
+        expect(fullScreenControl).toHaveAttr('role', 'button');
+        expect(fullScreenControl).toHaveAttr('title', 'Fill browser');
+        expect(fullScreenControl).toHaveAttr('aria-disabled', 'false');  
+      });
+
       it('bind the playback button', function() {
         expect($('.video_control')).toHandleWith('click', videoControl.togglePlayback);
       });

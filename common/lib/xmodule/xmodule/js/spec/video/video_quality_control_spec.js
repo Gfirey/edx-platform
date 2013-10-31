@@ -44,6 +44,12 @@
         expect(container).toContain(SELECTOR);
       });
 
+      it('add ARIA attributes to quality control', function () {
+        expect($(SELECTOR)).toHaveAttr('role', 'button');
+        expect($(SELECTOR)).toHaveAttr('title', 'HD off');  
+        expect($(SELECTOR)).toHaveAttr('aria-disabled', 'false');  
+      });
+
       it('bind the quality control', function() {
         var handler = videoQualityControl.toggleQuality;
         expect($(SELECTOR)).toHandleWith('click', handler);
