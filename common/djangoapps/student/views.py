@@ -465,15 +465,11 @@ def change_enrollment(request):
 
     elif action == "unenroll":
         try:
-            course = course_from_id(course_id)
-        except ItemNotFoundError:
-            log.warning("User {0} tried to unenroll from non-existent course {1}".format(user.username, course_id))
-            return HttpResponseBadRequest(_("Course id is invalid"))
-        try:
             enrollment_mode = CourseEnrollment.enrollment_mode_for_user(user, course_id)
         except CourseEnrollment.DoesNotExist:
             return HttpResponseBadRequest(_("You are not enrolled in this course"))
-        CourseEnrollment.unenroll(user, course_id)
+        if (CourseEnrollment.unenroll(user, course_id) == "Error Refunding"):
+            return HttpResponseBadRequest(_("There was an error refunding your certificate"))
         org, course_num, run = course_id.split("/")
         dog_stats_api.increment(
             "common.student.unenrollment",
@@ -482,7 +478,6 @@ def change_enrollment(request):
                   "run:{0}".format(run)]
         )
         return HttpResponse()
-        
     else:
         return HttpResponseBadRequest(_("Enrollment action is invalid"))
 
@@ -911,7 +906,6 @@ def create_account(request, post_override=None):
             log.warning('Unable to send activation email to user', exc_info=True)
             js['value'] = _('Could not send activation e-mail.')
             return HttpResponse(json.dumps(js))
-
 
     # Immediately after a user creates an account, we log them in. They are only
     # logged in until they close the browser. They can't log in again until they click

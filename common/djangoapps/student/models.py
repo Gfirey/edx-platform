@@ -29,8 +29,6 @@ from django.forms import ModelForm, forms
 import comment_client as cc
 from pytz import UTC
 
-import django.dispatch
-
 unenroll_done = django.dispatch.Signal(providing_args=["course_enrollment"])
 
 log = logging.getLogger(__name__)
@@ -828,7 +826,9 @@ class CourseEnrollment(models.Model):
             record = CourseEnrollment.objects.get(user=user, course_id=course_id)
             record.is_active = False
             record.save()
-            unenroll_done.send(sender=cls, course_enrollment=record)
+            response = unenroll_done.send(sender=cls, course_enrollment=record)
+            if response is False:
+                return False
         except cls.DoesNotExist:
             err_msg = u"Tried to unenroll student {} from {} but they were not enrolled"
             log.error(err_msg.format(user, course_id))

@@ -36,8 +36,6 @@ from student.tests.test_email import mock_render_to_string
 
 import shoppingcart
 
-from course_modes.models import CourseMode
-
 COURSE_1 = 'edX/toy/2012_Fall'
 COURSE_2 = 'edx/full/6.002_Spring_2012'
 

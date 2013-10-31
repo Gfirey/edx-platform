@@ -8,7 +8,6 @@ from collections import namedtuple
 from boto.exception import BotoServerError  # this is a super-class of SESError and catches connection errors
 
 from django.dispatch import receiver
-from django.db.models.signals import pre_save
 from django.db import models
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -17,7 +16,6 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 from django.db import transaction
 from django.core.urlresolvers import reverse
-from django.utils.timezone import UTC
 
 from xmodule.modulestore.django import modulestore
 from xmodule.course_module import CourseDescriptor
@@ -403,7 +401,6 @@ class CertificateItem(OrderItem):
     mode = models.SlugField()
 
     # TODO remove after signals refactoring
-    @classmethod
     @receiver(unenroll_done, sender=CourseEnrollment)
     def refund_cert_callback(sender, **kwargs):
         """
@@ -412,23 +409,22 @@ class CertificateItem(OrderItem):
         refund.
         """
         mode = kwargs['course_enrollment'].mode
-        is_active = kwargs['course_enrollment'].is_active
         course_id = kwargs['course_enrollment'].course_id
         user = kwargs['course_enrollment'].user
 
         # Only refund verified cert unenrollments that are within bounds of the expiration date
         if (mode != 'verified'):
-            return
+            return "Refund Unnecessary"
 
         if (CourseMode.mode_for_course(course_id, 'verified') is None):
-            return
+            return "Refund Unnecessary"
 
         target_certs = CertificateItem.objects.filter(course_id=course_id, user_id=user, status='purchased', mode='verified')
         try:
             target_cert = target_certs[0]
         except IndexError:
             log.exception("Matching CertificateItem not found while trying to refund.  User %s, Course %s", user, course_id)
-            raise IndexError
+            return "Error Refunding"
         target_cert.status = 'refunded'
         target_cert.save()
 
@@ -444,7 +440,6 @@ class CertificateItem(OrderItem):
             log.error('Failed sending email to billing request a refund for verified certiciate (User %s, Course %s)', user, course_id)
 
         return target_cert
-
 
     @classmethod
     @transaction.commit_on_success

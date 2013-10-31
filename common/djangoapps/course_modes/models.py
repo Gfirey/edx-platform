@@ -100,9 +100,6 @@ class CourseMode(models.Model):
         modes = cls.modes_for_course(course_id)
         return min(mode.min_price for mode in modes if mode.currency == currency)
 
-    def set_expiration_date(self, value):
-        self.expiration_date = value
-
     def __unicode__(self):
         return u"{} : {}, min={}, prices={}".format(
             self.course_id, self.mode_slug, self.min_price, self.suggested_prices
