@@ -329,6 +329,7 @@ class CertificateItemTest(ModuleStoreTestCase):
     Tests for verifying specific CertificateItem functionality
     """
     def setUp(self):
+        from nose.tools import set_trace; set_trace()
         self.user = UserFactory.create()
         self.course_id = "org/test/Test_Course"
         self.cost = 40
@@ -338,11 +339,12 @@ class CertificateItemTest(ModuleStoreTestCase):
                                  mode_display_name="honor cert",
                                  min_price=self.cost)
         course_mode.save()
-        course_mode = CourseModeFactory(course_id=self.course_id,
+        course_mode = CourseMode(course_id=self.course_id,
                                  mode_slug="verified",
                                  mode_display_name="verified cert",
                                  min_price=self.cost)
         course_mode.save()
+        from nose.tools import set_trace; set_trace()
 
     def test_existing_enrollment(self):
         CourseEnrollment.enroll(self.user, self.course_id)
