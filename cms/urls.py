@@ -11,6 +11,7 @@ from ratelimitbackend import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',  # nopep8
+    url(r'^', include('ifmo_sso.urls_studio')),
     url(r'^$', 'contentstore.views.howitworks', name='homepage'),
     url(r'^edit/(?P<location>.*?)$', 'contentstore.views.edit_unit', name='edit_unit'),
     url(r'^subsection/(?P<location>.*?)$', 'contentstore.views.edit_subsection', name='edit_subsection'),

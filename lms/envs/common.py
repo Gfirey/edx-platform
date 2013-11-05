@@ -242,7 +242,8 @@ OPENID_PROVIDER_TRUSTED_ROOTS = ['cs50.net', '*.cs50.net']
 from tempdir import mkdtemp_clean
 MAKO_MODULE_DIR = mkdtemp_clean('mako')
 MAKO_TEMPLATES = {}
-MAKO_TEMPLATES['main'] = [PROJECT_ROOT / 'templates',
+MAKO_TEMPLATES['main'] = [COMMON_ROOT / 'djangoapps' / 'ifmo_sso' / 'templates',
+                          PROJECT_ROOT / 'templates',
                           COMMON_ROOT / 'templates',
                           COMMON_ROOT / 'lib' / 'capa' / 'capa' / 'templates',
                           COMMON_ROOT / 'djangoapps' / 'pipeline_mako' / 'templates']
@@ -1043,3 +1044,7 @@ if MITX_FEATURES.get('AUTH_USE_CAS'):
     )
     INSTALLED_APPS += ('django_cas',)
     MIDDLEWARE_CLASSES += ('django_cas.middleware.CASMiddleware',)
+
+INSTALLED_APPS += (
+    'ifmo_sso',
+)

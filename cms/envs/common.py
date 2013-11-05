@@ -34,6 +34,12 @@ from xmodule.modulestore.inheritance import InheritanceMixin
 from xmodule.x_module import XModuleMixin
 from dealer.git import git
 
+# Import private settings
+try:
+  from lms.envs.private import *
+except ImportError:
+  pass
+
 ############################ FEATURE CONFIGURATION #############################
 
 MITX_FEATURES = {
@@ -88,6 +94,7 @@ from tempdir import mkdtemp_clean
 MAKO_MODULE_DIR = mkdtemp_clean('mako')
 MAKO_TEMPLATES = {}
 MAKO_TEMPLATES['main'] = [
+    COMMON_ROOT / 'djangoapps' / 'ifmo_sso' / 'templates',
     PROJECT_ROOT / 'templates',
     COMMON_ROOT / 'templates',
     COMMON_ROOT / 'djangoapps' / 'pipeline_mako' / 'templates',
@@ -397,7 +404,10 @@ INSTALLED_APPS = (
     'django.contrib.admin',
 
     # for managing course modes
-    'course_modes'
+    'course_modes',
+
+    # For ifmo_sso auth
+   'ifmo_sso',
 )
 
 

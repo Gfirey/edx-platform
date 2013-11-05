@@ -8,12 +8,12 @@
     <div class="colophon">
       <nav class="nav-colophon">
       <ol>
-          <li class="nav-colophon-01">
+ <!--           <li class="nav-colophon-01">
           <a id="about" href="${marketing_link('ABOUT')}">
               ${_("About")}
           </a>
           </li>
-          <li class="nav-colophon-02">
+         <li class="nav-colophon-02">
           <a id="jobs" href="${marketing_link('JOBS')}">
               ${_("Jobs")}
           </a>
@@ -32,17 +32,18 @@
           <a id="contact" href="${marketing_link('CONTACT')}">
               ${_("Contact")}
           </a>
-          </li>
+          </li> -->
       </ol>
       </nav>
 
       <div class="colophon-about">
-        <img src="${static.url('images/header-logo.png')}" />
-
-        <p>${_("{platform_name} is a non-profit created by founding partners {Harvard} and {MIT} whose mission is to bring the best of higher education to students of all ages anywhere in the world, wherever there is Internet access. {platform_name}'s free online MOOCs are interactive and subjects include computer science, public health, and artificial intelligence.").format(platform_name="EdX", Harvard="Harvard", MIT="MIT")}</p>
-      </div>
+        <img height="300px" width="350" src="${MITX_ROOT_URL}/static/images/itmo_eng_logo.gif" />
+<!-- 
+        <p>${_("{platform_name} is a non-profit created by founding partners {Harvard} and {MIT} whose mission is to bring the best of higher education to students of all ages anywhere in the world, wherever there is Internet access. {platform_name}'s free online MOOCs are interactive and subjects include computer science, public health, and artificial intelligence.").format(platform_name="EdX", Harvard="Harvard", MIT="MIT")}</p> -->
+       <p style="color:#999; width:80%;">Saint-Petersburg National Research University of Information Technologies, Mechanics and Optics<br/>Distance Learning Center</p>
+      </div>  
     </div>
-
+<!-- 
     <div class="references">
       <nav class="nav-social">
         <ul>
@@ -86,6 +87,6 @@
           </li>
         </ul>
       </nav>
-    </div>
+    </div> -->
   </footer>
 </div>
