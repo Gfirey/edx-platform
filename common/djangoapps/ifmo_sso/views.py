@@ -39,9 +39,13 @@ def sso_authenticate(request, redirect_on_success = '/', redirect_on_failure = '
     except User.DoesNotExist:
         # Register new user
         try:
+            u_email = request.POST.get('email')
+            if u_email == '':
+                # FIXME: Move to settings
+                u_email = u_ssoid + '@niuitmo.ru'
             # Creating User
             u = User.objects.create_user(username = u_ssoid,
-                                         email = request.POST.get('email'))
+                                         email = u_email)
             u.last_name = request.POST.get('lastname')
             u.first_name = request.POST.get('firstname')
             u.is_active = True
