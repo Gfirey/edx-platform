@@ -24,3 +24,7 @@ def run():
     if settings.INIT_MODULESTORE_ON_STARTUP:
         for store_name in settings.MODULESTORE:
             modulestore(store_name)
+
+    # Do the patching here
+    from ifmo_mod.patch import patch
+    patch()

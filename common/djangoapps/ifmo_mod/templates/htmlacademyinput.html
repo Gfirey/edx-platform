@@ -1,0 +1,22 @@
+<form id="inputtype_${id}" class="capa_inputtype">
+
+## TODO Hide navigation bars somehow else, scoped attribute wont be supported like so
+<style type="text/css" scoped="scoped">
+section.course-content nav {
+  display: none;
+}
+</style>
+
+<div>
+    <p>${description}</p>
+    <p>Go to <a href="http://htmlacademy.ru/courses/${course}/run/${task}" target="_blank">HTML Academy</a></p>
+</div>
+
+<fieldset>
+    <input type='hidden' id='input_${id}' name='input_${id}' value=''/>
+    <input type='hidden' id='input_${id}_user' name='input_${id}_user' value='${userid}'/>
+</fieldset>
+
+</form>
+
+

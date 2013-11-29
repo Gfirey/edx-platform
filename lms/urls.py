@@ -11,7 +11,10 @@ if settings.DEBUG or settings.MITX_FEATURES.get('ENABLE_DJANGO_ADMIN_SITE'):
 
 urlpatterns = ('',  # nopep8
     url(r'', include('ifmo_sso.urls')),
-
+    
+    # Overload default one
+    url(r'^change_enrollment$', 'ifmo_mod.views.change_enrollment', name="change_enrolmment"),
+    
     # certificate view
 
     url(r'^update_certificate$', 'certificates.views.update_certificate'),

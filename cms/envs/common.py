@@ -94,6 +94,7 @@ from tempdir import mkdtemp_clean
 MAKO_MODULE_DIR = mkdtemp_clean('mako')
 MAKO_TEMPLATES = {}
 MAKO_TEMPLATES['main'] = [
+    COMMON_ROOT / 'djangoapps' / 'ifmo_mod' / 'templates',
     COMMON_ROOT / 'djangoapps' / 'ifmo_sso' / 'templates',
     PROJECT_ROOT / 'templates',
     COMMON_ROOT / 'templates',
@@ -361,6 +362,9 @@ CELERY_QUEUES = {
 ############################ APPS #####################################
 
 INSTALLED_APPS = (
+    # Patch go first
+    'ifmo_mod',
+
     # Standard apps
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -408,6 +412,9 @@ INSTALLED_APPS = (
 
     # For ifmo_sso auth
    'ifmo_sso',
+
+   # Store current request
+   'crequest',
 )
 
 
@@ -452,3 +459,6 @@ YOUTUBE_API = {
     'url': "http://video.google.com/timedtext",
     'params': {'lang': 'en', 'v': 'set_youtube_id_of_11_symbols_here'}
 }
+
+MIDDLEWARE_CLASSES += ('crequest.middleware.CrequestMiddleware',)
+

@@ -25,3 +25,7 @@ def run():
 
     INITIALIZED = True
     autostartup()
+
+    # Do the patching here
+    from ifmo_mod.patch import patch
+    patch()

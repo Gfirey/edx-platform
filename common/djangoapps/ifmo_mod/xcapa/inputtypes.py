@@ -1,0 +1,27 @@
+from capa.inputtypes import InputTypeBase
+
+class HTMLAcademyInput(InputTypeBase):
+  template = 'htmlacademyinput.html'
+  tags = ['htmlacademy']
+
+  def setup(self):
+    # FIXME Error handling if some fields missing
+    self.m_title = self.xml.findtext('./title')
+    self.m_description = self.xml.findtext('./description')
+    self.m_task = self.xml.findtext('./task')
+    self.m_course = self.xml.findtext('./course')
+    
+    from crequest.middleware import CrequestMiddleware
+    current_request = CrequestMiddleware.get_request()
+    user = current_request.user
+    
+    self.m_userid = user.id
+
+  def _extra_context(self): 
+    return {
+      'title': self.m_title,
+      'description': self.m_description,
+      'task': self.m_task,
+      'course': self.m_course,
+      'userid': self.m_userid
+    }

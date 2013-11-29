@@ -242,7 +242,8 @@ OPENID_PROVIDER_TRUSTED_ROOTS = ['cs50.net', '*.cs50.net']
 from tempdir import mkdtemp_clean
 MAKO_MODULE_DIR = mkdtemp_clean('mako')
 MAKO_TEMPLATES = {}
-MAKO_TEMPLATES['main'] = [COMMON_ROOT / 'djangoapps' / 'ifmo_sso' / 'templates',
+MAKO_TEMPLATES['main'] = [COMMON_ROOT / 'djangoapps' / 'ifmo_mod' / 'templates',
+                          COMMON_ROOT / 'djangoapps' / 'ifmo_sso' / 'templates',
                           PROJECT_ROOT / 'templates',
                           COMMON_ROOT / 'templates',
                           COMMON_ROOT / 'lib' / 'capa' / 'capa' / 'templates',
@@ -895,6 +896,9 @@ BULK_EMAIL_RETRY_DELAY_BETWEEN_SENDS = 0.02
 
 ################################### APPS ######################################
 INSTALLED_APPS = (
+    # Patches go first
+    'ifmo_mod',
+
     # Standard ones that are always installed...
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -982,6 +986,9 @@ INSTALLED_APPS = (
 
     # Student Identity Verification
     'verify_student',
+
+    # Store current request to be accessed from anywhere
+    'crequest',
 )
 
 ######################### MARKETING SITE ###############################
@@ -1048,3 +1055,5 @@ if MITX_FEATURES.get('AUTH_USE_CAS'):
 INSTALLED_APPS += (
     'ifmo_sso',
 )
+
+MIDDLEWARE_CLASSES += ('crequest.middleware.CrequestMiddleware',)
