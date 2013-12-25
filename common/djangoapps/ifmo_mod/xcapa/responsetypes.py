@@ -24,6 +24,10 @@ class HTMLAcademyResponse(LoncapaResponse):
         def make_cmap(status = 'incorrect', points = 0, msg = ''):
             return CorrectMap(self.answer_id, status, npoints = points, msg = msg)
 
+        log.info('\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+        log.info(student_answers)
+        log.info(self.answer_id)
+
         # Get stat for current user
         from crequest.middleware import CrequestMiddleware
         current_request = CrequestMiddleware.get_request()

@@ -32,6 +32,9 @@ from courseware.courses import course_image_url, get_course_about_section
             <a href="#" class="university">${get_course_about_section(course, 'university')}</a>
           % endif
           <span class="start-date">${course.start_date_text}</span>
+          %if course.author is not None:
+            <div class="author">${_("Author")}: ${course.author}</div>
+          %endif
         </div>
       </section>
     </div>

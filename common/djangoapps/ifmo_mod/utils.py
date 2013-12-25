@@ -25,6 +25,14 @@ def do_external_request(url, allow_empty_answer = True):
           return None
     return request.text
 
+def get_current_request():
+    """
+    Retain current request.
+    """
+    return CrequestMiddleware.get_request()
+
+def get_current_uri():
+    return get_current_request().get_full_path()
 
 def get_current_ssoid():
     """
@@ -35,8 +43,7 @@ def get_current_ssoid():
     """
     ssoid = None
     try:
-        current_request = CrequestMiddleware.get_request()
-        ssoid = current_request.user.username
+        ssoid = get_current_request().user.username
     except Exception:
         log.error('Cannot lookup current user ssoid.')
     return ssoid
